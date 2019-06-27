@@ -13,12 +13,13 @@ import (
 	"github.com/bemyth/influx-stress/thread"
 )
 
+// Task 任务，每个 表 是一个任务
 type Task struct {
-	client   *http.Client
-	prod     string
-	cfg      config.Config
-	threads  chan *thread.Thread
-	writeReq int64
+	client      *http.Client
+	measurement string
+	cfg         config.Config
+	threads     chan *thread.Thread
+	writeReq    int64
 }
 
 func initPoint(prod string, size int, idx int) (points []point.Point) {
@@ -33,30 +34,34 @@ func initPoint(prod string, size int, idx int) (points []point.Point) {
 	}
 	return
 }
-func NewTask(client *http.Client, prod string, cfg config.Config) *Task {
+
+// NewTask 初始化一个任务
+func NewTask(client *http.Client, measurement string, cfg config.Config) *Task {
 	threads := make(chan *thread.Thread, cfg.Concurrent)
 	for i := 0; i < cfg.Concurrent; i++ {
-		threads <- thread.New(client, cfg, initPoint(prod, cfg.BatchSize, i))
+		threads <- thread.New(client, cfg, initPoint(measurement, cfg.BatchSize, i))
 	}
 
 	return &Task{
-		client:  client,
-		prod:    prod,
-		cfg:     cfg,
-		threads: threads,
+		client:      client,
+		measurement: measurement,
+		cfg:         cfg,
+		threads:     threads,
 	}
 }
 
 func (t *Task) log() {
 	var v int64
 	var pps int
-	for i := 0; i < t.cfg.Time; i++ {
+	for i := 1; i <= t.cfg.Time; i++ {
 		time.Sleep(1 * time.Second)
 		v = atomic.LoadInt64(&t.writeReq)
-		pps = int(v) / ((i + 1) * 10000)
-		fmt.Printf("[%s]\t%d\tw p/s\n", t.prod, pps)
+		pps = int(v) / (i * 10000)
+		fmt.Printf("[%s]\t%d\tw p/s\n", t.measurement, pps)
 	}
 }
+
+// Run 任务运行
 func (t *Task) Run() {
 	var th *thread.Thread
 	timer1 := time.NewTimer(time.Duration(t.cfg.Time) * time.Second)

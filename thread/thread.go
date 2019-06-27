@@ -10,7 +10,7 @@ import (
 	"github.com/bemyth/influx-stress/point"
 )
 
-// Task 任务线程
+// Thread 任务线程
 type Thread struct {
 	client   *http.Client
 	url      string
@@ -18,7 +18,7 @@ type Thread struct {
 	points   []point.Point
 }
 
-// New 初始化一个任务
+// New 初始化一个线程
 func New(client *http.Client, cfg config.Config, points []point.Point) *Thread {
 	return &Thread{
 		client:   client,
@@ -28,9 +28,9 @@ func New(client *http.Client, cfg config.Config, points []point.Point) *Thread {
 	}
 }
 
-// Send 消费者发送一次数据
+// Send 发送一次数据
 func (t *Thread) Send() {
-	b := point.MarshalPoints(t.points)
+	b := point.MarshalPointsThenUpdate(t.points)
 	buf := bytes.NewBuffer(b)
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/write", t.url), buf)
 	para := req.URL.Query()

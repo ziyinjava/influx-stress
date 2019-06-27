@@ -27,6 +27,7 @@ func main() {
 		fmt.Println("decode file: ", err.Error())
 		os.Exit(1)
 	}
+	fmt.Printf("%+v\n", cfg)
 	c := control.New(cfg)
-	c.Run()
+	c.Exec()
 }

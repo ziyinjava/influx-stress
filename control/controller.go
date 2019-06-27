@@ -7,11 +7,14 @@ import (
 	"github.com/bemyth/influx-stress/config"
 )
 
+// Controller 写入的整体控制
 type Controller struct {
-	cfg   config.Config
-	tasks []*Task
+	cfg    config.Config
+	tasks  []*Task
+	client *http.Client
 }
 
+// New  初始化一个控制器
 func New(cfg config.Config) *Controller {
 	c := &http.Client{
 		Transport: &http.Transport{
@@ -21,16 +24,19 @@ func New(cfg config.Config) *Controller {
 		},
 	}
 	var tasks []*Task
-	for i := 0; i < len(cfg.Prods); i++ {
-		tasks = append(tasks, NewTask(c, cfg.Prods[i], cfg))
+	for i := 0; i < len(cfg.Measurements); i++ {
+		tasks = append(tasks, NewTask(c, cfg.Measurements[i], cfg))
 	}
 	return &Controller{
-		cfg:   cfg,
-		tasks: tasks,
+		cfg:    cfg,
+		tasks:  tasks,
+		client: c,
 	}
 
 }
-func (c *Controller) Run() {
+
+// Exec 控制器开始执行
+func (c *Controller) Exec() {
 	var wg sync.WaitGroup
 	for i := range c.tasks {
 		wg.Add(1)
