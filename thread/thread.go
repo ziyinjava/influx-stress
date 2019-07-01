@@ -42,6 +42,7 @@ func (t *Thread) Send() {
 	resp, err := t.client.Do(req)
 	if err != nil {
 		fmt.Println(err)
+		return
 	}
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
 		fmt.Printf("Bad request status code: %d \n", resp.StatusCode)

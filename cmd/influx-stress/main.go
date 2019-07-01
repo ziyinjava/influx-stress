@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 
 	"github.com/bemyth/influx-stress/config"
@@ -29,5 +31,11 @@ func main() {
 	}
 	fmt.Printf("%+v\n", cfg)
 	c := control.New(cfg)
+
+	go pprof()
 	c.Exec()
+}
+
+func pprof() {
+	http.ListenAndServe(":6060", nil)
 }
