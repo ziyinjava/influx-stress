@@ -4,6 +4,7 @@ package config
 type Config struct {
 	// http://host:port
 	URL          string   `toml:"url"`
+	LogName      string   `toml:"logname"`
 	DataBase     string   `toml:"database"`
 	Measurements []string `toml:"measurements"`
 	Concurrent   int      `toml:"concurrent"`
