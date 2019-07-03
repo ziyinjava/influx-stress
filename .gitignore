@@ -28,3 +28,6 @@ _testmain.go
 
 # config
 *.conf
+
+# 可执行文件
+influx-stress
