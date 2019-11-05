@@ -1,21 +1,10 @@
 package main
 
 import (
-	"flag"
-	"github.com/spf13/cobra/cobra/cmd"
+	"github.com/bemyth/influx-stress/cmd/influx-stress/cmd"
 	_ "net/http/pprof"
 )
 
-var (
-	path string
-)
-
-func init() {
-	flag.StringVar(&path, "config", "./config.conf", "--config=$path")
-	flag.Parse()
-}
-
 func main() {
-
 	cmd.Execute()
 }

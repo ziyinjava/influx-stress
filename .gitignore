@@ -30,6 +30,6 @@ _testmain.go
 *.conf
 
 # 可执行文件
-influx-stress
+influx-stress.exe
 
 .idea/
