@@ -31,3 +31,5 @@ _testmain.go
 
 # 可执行文件
 influx-stress
+
+.idea/

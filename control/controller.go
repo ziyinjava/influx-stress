@@ -61,6 +61,10 @@ func New(cfg config.Config) *Controller {
 
 }
 
+func pprof() {
+	http.ListenAndServe(":6060", nil)
+}
+
 // Exec 控制器开始执行
 func (c *Controller) Exec() {
 	go c.log()
