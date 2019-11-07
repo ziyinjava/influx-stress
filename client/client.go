@@ -25,6 +25,16 @@ type client struct {
 	pts   chan string
 
 	ip, port, username, password string
+
+	counts uint64
+}
+
+func (c *client) logSpeed() {
+	start := time.Now()
+	for {
+		time.Sleep(2 * time.Second)
+
+	}
 }
 
 /*

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	stress2 "github.com/bemyth/influx-stress/stress"
+	"github.com/bemyth/influx-stress/stress"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +16,6 @@ var speedCmd = &cobra.Command{
 	Use:   "stress",
 	Short: "Stress Test",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			cmd.Help()
-		}
 		ExecuteStress()
 	},
 }
@@ -31,6 +28,6 @@ func init() {
 	speedCmd.Flags().StringVarP(&password, "password", "p", "", "password of influxdb server")
 }
 func ExecuteStress() {
-	server := stress2.NewServer(ip, port, username, password)
+	server := stress.NewServer(ip, port, username, password)
 	server.Run()
 }

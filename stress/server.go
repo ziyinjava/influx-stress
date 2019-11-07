@@ -3,6 +3,7 @@ package stress
 import (
 	"fmt"
 	"github.com/bemyth/influx-stress/client"
+	"math/rand"
 	"time"
 )
 
@@ -50,7 +51,7 @@ func (s *Server) Run() {
 func (s *Server) genPoints(timestamp uint64) [NumberOfTagValue]string {
 	var rst [NumberOfTagValue]string
 	for i := 0; i < NumberOfTagValue; i++ {
-		rst[i] = fmt.Sprintf("stress,tag1=%s,tag2=%s value=%.5f %d", s.tags[i], s.tags[i], timestamp)
+		rst[i] = fmt.Sprintf("stress,tag1=%s,tag2=%s value=%.6f %d\n", s.tags[i], s.tags[i], rand.Float64()*100, timestamp)
 	}
 	return rst
 }
