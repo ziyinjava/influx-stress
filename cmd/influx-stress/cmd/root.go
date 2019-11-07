@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"os"
 )
 
@@ -12,7 +13,9 @@ var (
 var rootCmd = &cobra.Command{
 	Use: "influx-stress",
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+		if len(args) == 0 {
+			cmd.Help()
+		}
 	},
 }
 
@@ -25,7 +28,8 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
 }
 func initConfig() {
-
+	viper.AutomaticEnv()
 }
