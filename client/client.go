@@ -6,11 +6,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"sync/atomic"
 	"time"
 )
 
 const (
-	BatchPoints                 = 1 << 11
+	BatchPoints                 = 1 << 12
 	BatchDuration time.Duration = 200 * time.Millisecond
 	DataBase                    = "influxstress"
 )
@@ -30,10 +31,14 @@ type client struct {
 }
 
 func (c *client) logSpeed() {
-	start := time.Now()
+	last := atomic.LoadUint64(&c.counts)
+	var speed uint64 = 0
 	for {
 		time.Sleep(2 * time.Second)
-
+		cur := atomic.LoadUint64(&c.counts)
+		speed = (cur - last) / 2
+		last = cur
+		fmt.Printf("speed：%d\tpoint/s\n", speed)
 	}
 }
 
@@ -46,6 +51,7 @@ func (c *client) Write(pt string) error {
 	return nil
 }
 func (c *client) run() {
+	go c.logSpeed()
 	for {
 		var count = 0
 		c.timer.Reset(BatchDuration)
@@ -86,6 +92,7 @@ func (c *client) writePoints(pts []string) {
 	// TODO 返回校验
 	switch resp.StatusCode {
 	case http.StatusNoContent, http.StatusOK:
+		atomic.AddUint64(&c.counts, uint64(len(pts)))
 	default:
 		b, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
@@ -102,9 +109,9 @@ func NewClient(ip, port, username, password string) *client {
 		c: &http.Client{
 			Transport: &http.Transport{
 				DisableKeepAlives:   false,
-				MaxIdleConns:        10,
-				MaxIdleConnsPerHost: 10,
-				MaxConnsPerHost:     10,
+				MaxIdleConns:        30,
+				MaxIdleConnsPerHost: 30,
+				MaxConnsPerHost:     30,
 			},
 		},
 		pts:      make(chan string, BatchPoints),

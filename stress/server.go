@@ -27,16 +27,6 @@ func NewServer(ip, port, username, password string) *Server {
 		tags: genTagValue(),
 	}
 }
-
-type point struct {
-	series    string
-	value     float64
-	timestamp uint64
-}
-
-func (p *point) Marshal() string {
-	return fmt.Sprintf("%s value=%f %d\n", p.series, p.value, p.timestamp)
-}
 func (s *Server) Run() {
 	nowTime := time.Now().UnixNano()
 	for {
