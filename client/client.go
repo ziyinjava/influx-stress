@@ -62,11 +62,12 @@ func (c *client) run() {
 				goto WRITEPOINTS
 			case pt := <-c.pts:
 				pts = append(pts, pt)
+				count += 1
 			}
 		}
 	WRITEPOINTS:
 		if len(pts) != 0 {
-			c.writePoints(pts)
+			go c.writePoints(pts)
 		}
 	}
 }
@@ -100,7 +101,6 @@ func (c *client) writePoints(pts []string) {
 		}
 		fmt.Println(string(b))
 		panic(fmt.Sprintf("http response status code is [%d]\n", resp.StatusCode))
-
 	}
 }
 

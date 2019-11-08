@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
+	"time"
 )
 
 var (
@@ -24,6 +25,8 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(-1)
 	}
+
+	time.Sleep(1 * time.Minute)
 }
 
 func init() {
